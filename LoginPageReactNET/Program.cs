@@ -1,8 +1,17 @@
+using LoginPageReactNET.Configuration;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<Context>
+    (options =>
+    {
+        options.UseInMemoryDatabase(databaseName: "Login");
+    });
 
 var app = builder.Build();
 
