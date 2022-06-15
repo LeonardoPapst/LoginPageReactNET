@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LoginPageReactNET.Configuration;
 using LoginPageReactNET.Models;
+using Newtonsoft.Json.Linq;
 
 namespace LoginPageReactNET.Controllers
 {
@@ -19,6 +20,30 @@ namespace LoginPageReactNET.Controllers
         public PeopleController(Context context)
         {
             _context = context;
+        }
+
+        //Post to authenticate
+        [HttpPost]
+        [Route("Login")]
+        public ActionResult Login(JObject objLogin)
+        {
+
+            //var person = _context.Person.Find(person => person.Email = objLogin["Email"]);
+            var person = _context.Person
+                    .Where(b => b.Email == objLogin["Email"].ToString())
+                    .FirstOrDefault();
+
+            if (person == null)
+            {
+                return Unauthorized("Email not found");
+            }
+
+            if (person.Password != objLogin["Password"].ToString())
+            {
+                return Unauthorized("Incorrect password");
+            }
+
+            return Ok();
         }
 
         // GET: api/People
